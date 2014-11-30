@@ -1,0 +1,21 @@
+apply plugin: 'java'
+
+repositories {
+    mavenCentral()
+}
+
+jar {
+    //create fat-jar file
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+
+    manifest {
+        attributes 'Main-Class': 'com.bizbeam.s3.uploader.Main'
+    }
+}
+
+dependencies {
+    compile 'com.amazonaws:aws-java-sdk:1.0.002'
+    compile 'com.beust:jcommander:1.35'
+
+    compile 'log4j:log4j:1.2.17'
+}
