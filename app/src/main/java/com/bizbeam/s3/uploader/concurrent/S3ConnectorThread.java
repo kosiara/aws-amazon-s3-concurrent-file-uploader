@@ -4,10 +4,12 @@ import com.beust.jcommander.JCommander;
 import com.beust.jcommander.internal.Lists;
 import com.bizbeam.s3.uploader.S3Connector;
 import com.bizbeam.s3.uploader.jcommander.JCommanderParams;
+import com.google.common.base.Stopwatch;
 import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class S3ConnectorThread extends Thread {
 
@@ -16,6 +18,8 @@ public class S3ConnectorThread extends Thread {
     S3Connector s3Connector;
     JCommanderParams mJCommanderParams;
     private boolean result = false;
+    Stopwatch stopwatch = Stopwatch.createUnstarted();
+    double mAvgTime;
 
     public S3ConnectorThread(JCommanderParams jCommanderParams, int threadNo) {
         super();
@@ -58,11 +62,17 @@ public class S3ConnectorThread extends Thread {
                 filesToUpload.add(f);
             }
 
+            stopwatch.start();
 
             for (File file : filesToUpload) {
                 s3Connector.uploadFile(file);
                 s3Connector.removeFile(file.getName());
             }
+
+            stopwatch.stop();
+            long milliSeconds = stopwatch.elapsed(TimeUnit.MILLISECONDS);
+            double secondsForSingleOperation = (milliSeconds/(filesToUpload.size()*2.0))/1000;
+            mAvgTime = secondsForSingleOperation;
 
         } catch (Exception exc) {
             LOGGER.error("Error in connection in thread no. : " + mThreadNo, exc);
@@ -71,6 +81,10 @@ public class S3ConnectorThread extends Thread {
 
     public boolean getResult() {
         return result;
+    }
+
+    public double getAvgTime() {
+        return mAvgTime;
     }
 
     private static void sleep(int millis) {

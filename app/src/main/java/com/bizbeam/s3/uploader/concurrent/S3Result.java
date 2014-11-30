@@ -2,23 +2,22 @@ package com.bizbeam.s3.uploader.concurrent;
 
 public class S3Result {
 
-    private Thread thread;
+    private S3ConnectorThread thread;
 
     private boolean result = false;
 
-    //in millis
-    private long sendTime = 0;
+    //in seconds
+    private double sendAvgTime = 0;
 
-
-    public Thread getThread() {
+    public S3ConnectorThread getThread() {
         return thread;
     }
 
-    public void setThread(Thread thread) {
+    public void setThread(S3ConnectorThread thread) {
         this.thread = thread;
     }
 
-    public boolean isResult() {
+    public boolean getResult() {
         return result;
     }
 
@@ -26,11 +25,11 @@ public class S3Result {
         this.result = result;
     }
 
-    public long getSendTime() {
-        return sendTime;
+    public double getSendAvgTime() {
+        return sendAvgTime;
     }
 
-    public void setSendTime(long sendTime) {
-        this.sendTime = sendTime;
+    public void setSendAvgTime(double sendAvgTime) {
+        this.sendAvgTime = sendAvgTime;
     }
 }

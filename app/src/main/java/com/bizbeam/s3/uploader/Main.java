@@ -7,6 +7,7 @@ import com.bizbeam.s3.uploader.concurrent.S3Result;
 import com.bizbeam.s3.uploader.jcommander.JCommanderParams;
 import org.apache.log4j.Logger;
 import java.io.File;
+import java.text.DecimalFormat;
 import java.util.List;
 
 public class Main {
@@ -44,17 +45,34 @@ public class Main {
                 s3Result.getThread().run();
             }
 
-            for (S3Result s3Result : s3ResultThreads)
+            for (S3Result s3Result : s3ResultThreads) {
                 s3Result.getThread().join();
+                s3Result.setResult(s3Result.getThread().getResult());
+                s3Result.setSendAvgTime(s3Result.getThread().getAvgTime());
+            }
 
 
+            DecimalFormat df = new DecimalFormat("0.00##");
+            System.out.println("\r\n" + "Avg time of threads: ");
+            int numberOfErrors = 0;
+            double avgTime = 0;
+            int avgTimeCounter = 0;
+            for (S3Result s3Result : s3ResultThreads) {
+                if (!s3Result.getResult())
+                    numberOfErrors++;
+                if (s3Result.getResult()) {
+                    avgTimeCounter++;
+                    avgTime += s3Result.getSendAvgTime();
+                    System.out.println(df.format(avgTime) + " sec. ");
+                }
+            }
 
+            avgTime /= avgTimeCounter;
 
-                LOGGER.info("");
-                LOGGER.info("Current results");
-                LOGGER.info("==========================");
-                LOGGER.info("Correct connections:" + correctConnections);
-                LOGGER.info("Failed connections:" + failedConnections + "\r\n\r\n");
+            LOGGER.info("");
+            LOGGER.info("TOTAL Average time: " + avgTime + " sec.");
+            LOGGER.info("==========================");
+            LOGGER.info("Failed connections:" + numberOfErrors + "\r\n\r\n");
 
 
         } catch (Exception exc) {
@@ -64,8 +82,6 @@ public class Main {
     }
 
     private static void processArguments(JCommanderParams jcp) {
-        int paramNum = jcp.getParameters().size();
-
         if (jcp.getIntervalSeconds() ==  -1)
             jcp.setIntervalSeconds(5);
 
