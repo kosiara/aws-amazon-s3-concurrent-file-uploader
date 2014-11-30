@@ -2,6 +2,8 @@ package com.bizbeam.s3.uploader;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.internal.Lists;
+import com.bizbeam.s3.uploader.concurrent.S3ConnectorThread;
+import com.bizbeam.s3.uploader.concurrent.S3Result;
 import com.bizbeam.s3.uploader.jcommander.JCommanderParams;
 import org.apache.log4j.Logger;
 import java.io.File;
@@ -30,37 +32,23 @@ public class Main {
             LOGGER.info("secret key : " + jcp.getSecretKey());
             LOGGER.info("bucket name : " + jcp.getBucketName());
             LOGGER.info("current dir : " + new File(".").getAbsolutePath());
+            LOGGER.info("number of threads : " + jcp.getNumberOfThreads());
 
-            S3Connector s3Connector = new S3Connector(jcp.getBucketName(), jcp.getAccessKey(), jcp.getSecretKey());
-            s3Connector.initialize();
+            List<S3Result> s3ResultThreads = Lists.newArrayList();
+            for (int i = 0; i < jcp.getNumberOfThreads(); i++)
+                s3ResultThreads.add(new S3Result());
 
-            while (true) {
+            int i = 0;
+            for (S3Result s3Result : s3ResultThreads) {
+                s3Result.setThread(new S3ConnectorThread(jcp, i++));
+                s3Result.getThread().run();
+            }
 
-                try {
-
-                    String[] allFiles = new File(".").list();
-                    List<File> filesToUpload = Lists.newArrayList();
-                    for (String file : allFiles) {
-                        if (file.contains("app") || file.contains(".jar") || file.contains(".sh"))
-                            continue;
-                        File f = new File(file);
-                        if (f.isDirectory())
-                            continue;
-
-                        filesToUpload.add(f);
-                    }
+            for (S3Result s3Result : s3ResultThreads)
+                s3Result.getThread().join();
 
 
-                    for (File file : filesToUpload) {
-                        s3Connector.uploadFile(file);
-                        s3Connector.removeFile(file.getName());
-                    }
 
-                    correctConnections++;
-                } catch (Exception exc) {
-                    LOGGER.error("Error in connection: ", exc);
-                    failedConnections++;
-                }
 
                 LOGGER.info("");
                 LOGGER.info("Current results");
@@ -68,9 +56,6 @@ public class Main {
                 LOGGER.info("Correct connections:" + correctConnections);
                 LOGGER.info("Failed connections:" + failedConnections + "\r\n\r\n");
 
-                LOGGER.info("Sleeping " + jcp.getIntervalSeconds() + " seconds...");
-                sleep(jcp.getIntervalSeconds() * 1000);
-            }
 
         } catch (Exception exc) {
             LOGGER.error(exc);
