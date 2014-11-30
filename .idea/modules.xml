@@ -3,7 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/aws-amazon-s3-file-uploader.iml" filepath="$PROJECT_DIR$/aws-amazon-s3-file-uploader.iml" />
+      <module fileurl="file://$PROJECT_DIR$/aws-amazon-s3-concurrent-file-uploader.iml" filepath="$PROJECT_DIR$/aws-amazon-s3-concurrent-file-uploader.iml" />
     </modules>
   </component>
 </project>
