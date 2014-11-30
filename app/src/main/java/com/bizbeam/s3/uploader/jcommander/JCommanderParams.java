@@ -22,6 +22,9 @@ public class JCommanderParams {
     @Parameter(names = { "-b", "-bucket", "-bucketName" }, description = "AWSAccessKeyId to access Amazon S3 cloud storage")
     private String bucketName;
 
+    @Parameter(names = { "-t", "-threads", "-threadsNumber" }, description = "AWSAccessKeyId to access Amazon S3 cloud storage")
+    private int numberOfThreads;
+
     public List<String> getParameters() {
         return parameters;
     }
@@ -60,5 +63,13 @@ public class JCommanderParams {
 
     public void setBucketName(String bucketName) {
         this.bucketName = bucketName;
+    }
+
+    public int getNumberOfThreads() {
+        return numberOfThreads;
+    }
+
+    public void setNumberOfThreads(int numberOfThreads) {
+        this.numberOfThreads = numberOfThreads;
     }
 }
