@@ -57,7 +57,7 @@ public class S3ConnectorThread extends Thread {
             String[] allFiles = new File(".").list();
             List<File> filesToUpload = Lists.newArrayList();
             for (String file : allFiles) {
-                if (file.contains("app") || file.contains(".jar") || file.contains(".sh"))
+                if (file.contains("app") || file.contains(".jar") || file.contains(".sh") || file.contains(".log"))
                     continue;
                 File f = new File(file);
                 if (f.isDirectory())
