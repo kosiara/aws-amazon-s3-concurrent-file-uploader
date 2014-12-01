@@ -32,6 +32,8 @@ public class S3ConnectorThread extends Thread {
     @Override
     public void run() {
         super.run();
+        LOGGER.info("Thread: " + mThreadNo + " started.");
+        sleep(200);
 
         try {
             s3Connector = new S3Connector(mJCommanderParams.getBucketName(),

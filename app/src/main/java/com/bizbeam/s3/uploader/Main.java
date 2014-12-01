@@ -42,7 +42,7 @@ public class Main {
             int i = 0;
             for (S3Result s3Result : s3ResultThreads) {
                 s3Result.setThread(new S3ConnectorThread(jcp, i++));
-                s3Result.getThread().run();
+                s3Result.getThread().start();
             }
 
             for (S3Result s3Result : s3ResultThreads) {
@@ -63,7 +63,7 @@ public class Main {
                 if (s3Result.getResult()) {
                     avgTimeCounter++;
                     avgTime += s3Result.getSendAvgTime();
-                    System.out.println(df.format(avgTime) + " sec. ");
+                    System.out.println(df.format(s3Result.getSendAvgTime()) + " sec. ");
                 }
             }
 
