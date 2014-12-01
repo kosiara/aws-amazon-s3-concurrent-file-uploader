@@ -12,7 +12,9 @@ thousands of clients as well as heavy use by copying large files into the progra
 Example use:
 =============
 6 files copied to program directory, -t (threads) set to 1000
+
 Number of connections: 1000 (to check bucket availability) + 6 * 2 * 1000 = 13000
+
 Concurrent connections: 1000+ (1000 - 12000 opened in the first 3 seconds of operation)
 
 
