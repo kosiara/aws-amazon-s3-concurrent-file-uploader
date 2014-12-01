@@ -51,6 +51,15 @@ public class S3Connector {
         mAmazonS3.putObject(putObjectRequest);
     }
 
+    public void uploadFile(String folder, File file) throws Exception {
+        if (!mInitialized)
+            throw new Exception(CONNECTOR_NOT_INITIAZLIED_ERROR_MSG);
+
+        PutObjectRequest putObjectRequest = new PutObjectRequest(mAWS_S3_BUCKET, folder + "/" + file.getName(), file);
+        putObjectRequest.withCannedAcl(CannedAccessControlList.PublicRead);
+        mAmazonS3.putObject(putObjectRequest);
+    }
+
     public void createNewBucket(String bucketName) throws Exception {
         if (!mInitialized)
             throw new Exception(CONNECTOR_NOT_INITIAZLIED_ERROR_MSG);
@@ -63,6 +72,13 @@ public class S3Connector {
             throw new Exception(CONNECTOR_NOT_INITIAZLIED_ERROR_MSG);
 
         mAmazonS3.deleteObject(mAWS_S3_BUCKET, objectKey);
+    }
+
+    public void removeFile(String folder, String objectKey) throws Exception {
+        if (!mInitialized)
+            throw new Exception(CONNECTOR_NOT_INITIAZLIED_ERROR_MSG);
+
+        mAmazonS3.deleteObject(mAWS_S3_BUCKET, folder + "/" +objectKey);
     }
 
 

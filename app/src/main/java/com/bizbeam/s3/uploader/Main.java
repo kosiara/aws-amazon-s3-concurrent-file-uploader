@@ -95,9 +95,5 @@ public class Main {
             jcp.setBucketName(AWSBucketName);
     }
 
-    private static void sleep(int millis) {
-        try { Thread.sleep(millis); }  catch (Exception exc) { }
-    }
-
     private static final Logger LOGGER = Logger.getLogger(Main.class);
 }
